@@ -87,6 +87,7 @@ var MAINAPP = (function(nsp, $, domU, strU) {
 
           if (value !== "") {
             ans = strU.breakOut(this.correctResp, ",");
+            // check answer return true or false
             this.correct = ans.every(function(val) {
               return value.indexOf(val) > -1;
             });
@@ -113,7 +114,23 @@ var MAINAPP = (function(nsp, $, domU, strU) {
             distractorsRadio[i].checked = false;
           }
         };
-        this.checkTheAnswer = function() {};
+        this.checkTheAnswer = function() {
+          console.log("multi-choice");
+
+          for (let i = 0; i < distractors.length; i++) {
+            if (distractorsRadio[i].checked) {
+              this.studentResp = $(
+                "#" + distractorsRadio[i].id + "_label"
+              )[0].innerHTML;
+            }
+          }
+          if (this.studentResp !== "") {
+            this.correct = this.studentResp === this.correctResp;
+            this.result = this.correct ? "correct" : "incorrect";
+          }
+          this.hideFeedback();
+          this.displayFeedback();
+        };
         break;
       default:
         this.populateTheQuestion = function() {
