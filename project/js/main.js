@@ -37,10 +37,9 @@ var MAINAPP = (function(nsp, $, domU, strU) {
       }
       console.log("parseData: ", questionsArray);
       // 3. show question on html dom
-      // 3.1 set question content for each html tag
-      questionsArray[0].populateTheQuestion();
-      // 3.2 show content to user
-      questionsArray[0].displayQuestion();
+      //   questionsArray[0].populateTheQuestion();
+      //   questionsArray[0].displayQuestion();
+      setUpNavigation();
     },
     initQuiz = function() {
       loadJSON("../JSON/content.json");
@@ -150,7 +149,7 @@ var MAINAPP = (function(nsp, $, domU, strU) {
       this.htmlDiv.querySelectorAll(".fill-in-submit.btn-primary"),
       "click",
       function() {
-        // don't need to use this.checkTheAnswer because i use .bind(this)
+        // don't need to use this.checkTheAnswer because i usind(this)
         checkTheAnswer();
       }
     );
@@ -178,6 +177,61 @@ var MAINAPP = (function(nsp, $, domU, strU) {
   };
   Question.prototype.checkAnswer = function() {};
 
+  /**
+   * SETUP NAVIGATION OBJECT
+   */
+  var setUpNavigation = function() {
+    navigationProto = {
+      questionsArray: questionsArray,
+      totalQuestions: questionsArray.length,
+      currentQuestion: 0,
+      hideQuestion: function() {
+        var curQuestion = this.questionsArray[this.currentQuestion];
+        curQuestion.hideQuestion();
+      },
+      showQuestion: function() {
+        var newQuestion = this.questionsArray[this.currentQuestion];
+        newQuestion.hideFeedback();
+        newQuestion.populateTheQuestion();
+        newQuestion.displayQuestion();
+      }
+    };
+
+    nextBtn = Object.create(navigationProto);
+    nextBtn.goNext = function(e) {
+      if (this.currentQuestion < this.totalQuestions - 1) {
+        this.hideQuestion();
+        this.currentQuestion = this.currentQuestion + 1;
+        this.showQuestion();
+      }
+    };
+
+    prevBtn = Object.create(navigationProto);
+    prevBtn.goPrev = function(e) {
+      if (this.currentQuestion > 0) {
+        this.hideQuestion();
+        this.currentQuestion = this.currentQuestion - 1;
+        this.showQuestion();
+      }
+    };
+
+    $(".btn-prev")[0].addEventListener("click", function(e) {
+      prevBtn.goPrev(e);
+    });
+
+    $(".btn-next")[0].addEventListener("click", function(e) {
+      nextBtn.goNext(e);
+    });
+
+    navigationProto.showQuestion();
+
+    nsp.prevBtn = prevBtn;
+    nsp.nextBtn = nextBtn;
+  };
+
+  /**
+   * SETUP
+   */
   UTIL.domReady(function() {
     initQuiz();
   });
