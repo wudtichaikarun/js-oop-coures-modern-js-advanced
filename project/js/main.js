@@ -38,9 +38,9 @@ var MAINAPP = (function(nsp, $, domU, strU) {
       console.log("parseData: ", questionsArray);
       // 3. show question on html dom
       // 3.1 set question content for each html tag
-      questionsArray[1].populateTheQuestion();
+      questionsArray[0].populateTheQuestion();
       // 3.2 show content to user
-      questionsArray[1].displayQuestion();
+      questionsArray[0].displayQuestion();
     },
     initQuiz = function() {
       loadJSON("../JSON/content.json");
@@ -142,7 +142,18 @@ var MAINAPP = (function(nsp, $, domU, strU) {
 
   /** Add method to prototype of function constructor */
   Question.prototype.displayQuestion = function() {
+    // bind this for checkTheAnswer method
+    var checkTheAnswer = this.checkTheAnswer.bind(this);
+
     domU.removeClass([this.htmlDiv], "hidden-question");
+    domU.assignEvent(
+      this.htmlDiv.querySelectorAll(".fill-in-submit.btn-primary"),
+      "click",
+      function() {
+        // don't need to use this.checkTheAnswer because i use .bind(this)
+        checkTheAnswer();
+      }
+    );
   };
   Question.prototype.hideQuestion = function() {
     domU.addClass([this.htmlDiv], "hidden-question");
