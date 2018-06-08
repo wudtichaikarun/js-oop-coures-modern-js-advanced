@@ -52,13 +52,19 @@ var MAINAPP = (function(nsp, $, domU, strU) {
     //Transfer Data
     this.questionDiv = obj.type === "true-false" ? "multi-choice" : obj.type;
 
-    this.type = obj.type;
-    this.id = obj.id;
-    this.questionText = obj.questionText;
-    this.distractorText = obj.distractors;
-    this.correctResp = obj.correctResp;
-    this.feedback = obj.feedback;
-    this.weight = obj.weight;
+    // this.type = obj.type;
+    // this.id = obj.id;
+    // this.questionText = obj.questionText;
+    // this.distractors = obj.distractors;
+    // this.correctResp = obj.correctResp;
+    // this.feedback = obj.feedback;
+    // this.weight = obj.weight;
+
+    // loop create properties
+    for (let key in obj) {
+      this[key] = obj[key];
+    }
+
     this.result = "no-answer";
     this.studentResp = "";
     this.correct = false;
@@ -104,8 +110,8 @@ var MAINAPP = (function(nsp, $, domU, strU) {
           this.populateQuestion();
           domU.addClass(distractors, "remove");
           for (let i = 0; i < distractors.length; i++) {
-            if (this.distractorText[i] !== undefined) {
-              distractors[i].innerHTML = this.distractorText[i];
+            if (this.distractors[i] !== undefined) {
+              distractors[i].innerHTML = this.distractors[i];
               domU.removeClass([distractors[i]], "remove");
             }
           }
